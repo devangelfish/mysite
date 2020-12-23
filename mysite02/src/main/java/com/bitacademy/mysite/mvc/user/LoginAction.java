@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.bitacademy.mysite.repository.UserRepository;
 import com.bitacademy.mysite.vo.UserVo;
@@ -28,6 +29,10 @@ public class LoginAction implements Action {
 			WebUtil.forward(request, response, "WEB-INF/views/user/loginform.jsp");
 			return;
 		}
+		
+		HttpSession session = request.getSession(true);
+		session.setAttribute("authUser", userVo);
+		
+		WebUtil.redirect(request, response, request.getContextPath());
 	}
-
 }
