@@ -12,7 +12,6 @@
 		<jsp:include page="/WEB-INF/views/includes/header.jsp" />
 		<div id="content">
 			<div id="user">
-
 				<form id="join-form" name="joinForm" method="post" action="<%=request.getContextPath() %>/user">
 					<input type='hidden' name='a' value='join'>
 					<label class="block-label" for="name">이름</label>
