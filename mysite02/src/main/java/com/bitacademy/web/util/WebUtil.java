@@ -1,4 +1,4 @@
-package com.bitacademy.web.mvc;
+package com.bitacademy.web.util;
 
 import java.io.IOException;
 
