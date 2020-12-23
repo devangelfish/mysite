@@ -8,10 +8,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.bitacademy.web.mvc.WebUtil;
 
-public class MainServlet extends HttpServlet {
+public class MainController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-    public MainServlet() {
+    public MainController() {
         
     }
 
