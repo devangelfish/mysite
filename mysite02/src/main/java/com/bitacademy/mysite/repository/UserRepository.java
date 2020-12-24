@@ -20,7 +20,7 @@ public class UserRepository {
 			
 			// 3. SQL 준비
 			String sql =
-				"   select no, name" +
+				"   select no, name, email" +
 				"     from user" +
 				" where email=?" +
 				" and password=?";
@@ -37,10 +37,12 @@ public class UserRepository {
 			if(rs.next()) {
 				Long no = rs.getLong(1);
 				String name = rs.getString(2);
+				String email = rs.getString(3);
 				
 				userVo = new UserVo();
 				userVo.setNo(no);
 				userVo.setName(name);
+				userVo.setEmail(email);
 			}
 			
 		} catch (SQLException e) {
@@ -106,6 +108,49 @@ public class UserRepository {
 			}
 		}		
 		
+		return result;
+	}
+	
+	public boolean update(UserVo vo) {
+		boolean result = false;
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+				
+		try {
+			conn = getConnection();
+			
+			// 3. SQL 준비
+			String sql =
+				"   update user" +
+				"     set name=?, password=?" +
+				" where no=?";
+			pstmt = conn.prepareStatement(sql);
+			
+			// 4. 바인딩
+			pstmt.setString(1, vo.getName());
+			pstmt.setString(2, vo.getPassword());
+			pstmt.setLong(3, vo.getNo());
+			
+			// 5. sql문 실행
+			int count = pstmt.executeUpdate();
+			
+			result = count == 1;
+			
+		} catch (SQLException e) {
+			System.out.println("error:" + e);
+		} finally {
+			try {
+				if(pstmt != null) {
+					pstmt.close();
+				}
+				if(conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 		return result;
 	}
 	

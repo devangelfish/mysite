@@ -1,7 +1,5 @@
 package com.bitacademy.mysite.mvc.guestbook;
 
-import com.bitacademy.mysite.mvc.main.MainAction;
-import com.bitacademy.mysite.mvc.user.JoinFormAction;
 import com.bitacademy.web.mvc.Action;
 import com.bitacademy.web.mvc.ActionFactory;
 

@@ -16,13 +16,10 @@
 		<div id="content">
 			<div id="user">
 				<form id="join-form" name="joinForm" method="post" action="${pageContext.request.contextPath }/user">
-					<input type='hidden' name='a' value='join'>
+					<input type='hidden' name='a' value='update'>
+					<h4>${ authUser.email }</h4>
 					<label class="block-label" for="name">이름</label>
-					<input id="name" name="name" type="text" value="">
-
-					<label class="block-label" for="email">이메일</label>
-					<input id="email" name="email" type="text" value="">
-					<input type="button" value="중복체크">
+					<input id="name" name="name" type="text" value="${ authUser.name }">
 					
 					<label class="block-label">패스워드</label>
 					<input name="password" type="password" value="">
@@ -39,7 +36,7 @@
 						<label>서비스 약관에 동의합니다.</label>
 					</fieldset>
 					
-					<input type="submit" value="가입하기">
+					<input type="submit" value="수정하기">
 					
 				</form>
 			</div>
