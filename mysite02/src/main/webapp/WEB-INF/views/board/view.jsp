@@ -40,6 +40,9 @@
 							<a href="${pageContext.request.contextPath }/board?a=modify">글수정</a>
 						</c:if>
 					</c:if>
+					<c:if test='${ not empty authUser }'>
+						<a href="${pageContext.request.contextPath }/board?a=reply">답글</a>
+					</c:if>
 				</div>
 			</div>
 		</div>
