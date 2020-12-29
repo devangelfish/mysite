@@ -18,10 +18,12 @@ public class WriteFormAction implements Action {
 		HttpSession session = request.getSession(false);
 		UserVo userVo = null;
 
-		userVo = (UserVo) session.getAttribute("authUser");
+		if(session != null) {
+			userVo = (UserVo) session.getAttribute("authUser");
+		}
 
 		if (userVo == null) {
-			WebUtil.forward(request, response, "WEB-INF/views/user/loginform.jsp");
+			WebUtil.forward(request, response, "/WEB-INF/views/user/loginform.jsp");
 			return;
 		} else {
 			WebUtil.forward(request, response, "/WEB-INF/views/board/write.jsp");

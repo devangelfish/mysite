@@ -179,6 +179,59 @@ public class BoardRepository {
 		return result;
 	}
 	
+	public boolean reply(BoardVo boardVo, BoardVo parentBoardVo) {
+		boolean result = false;
+
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = getConnection();
+			
+			// 3. SQL 준비
+			String sql =
+					" insert" +
+					"   into board" +
+					" values(null, ?, ?, now(), 0, ?, ?, ?, ?)";
+			pstmt = conn.prepareStatement(sql);
+			
+			// 4. 바인딩
+			pstmt.setString(1, boardVo.getTitle());
+			pstmt.setString(2, boardVo.getContents());
+			pstmt.setLong(3, parentBoardVo.getGroupNo());
+			pstmt.setInt(4, parentBoardVo.getOrderNo() + 1);
+			pstmt.setInt(5, parentBoardVo.getDepth() + 1);
+			pstmt.setLong(6, boardVo.getUserNo());
+			
+			// 5. sql문 실행
+			int count = pstmt.executeUpdate();
+			
+			updateOrder(parentBoardVo);
+			
+			result = count == 1;
+			
+		} catch (SQLException e) {
+			System.out.println("error:" + e);
+		} finally {
+			try {
+				// 3. 자원정리
+				if(rs != null) {
+					rs.close();
+				}
+				if(pstmt != null) {
+					pstmt.close();
+				}
+				if(conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}		
+		
+		return result;
+	}
+	
 	public BoardVo findByNo(Long no) {
 		BoardVo boardVo = null;
 		Connection conn = null;
@@ -239,6 +292,89 @@ public class BoardRepository {
 		return boardVo;
 	}
 	
+	public boolean updateOrder(BoardVo boardVo) {
+		boolean result = false;
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+				
+		try {
+			conn = getConnection();
+			
+			// 3. SQL 준비
+			String sql = " update" +
+					"   board set order_no = order_no + 1" +
+					" where group_no = ? and order_no >= ?";
+			pstmt = conn.prepareStatement(sql);
+			
+			// 4. 바인딩
+			pstmt.setLong(1, boardVo.getGroupNo()); // group_no = parentBoardVo.getGroupNo()
+			pstmt.setLong(2, boardVo.getOrderNo() + 1); // order_no >= parentBoardVo.getOrderNo() + 1
+			
+			// 5. sql문 실행
+			int count = pstmt.executeUpdate();
+			
+			result = count == 1;
+			
+		} catch (SQLException e) {
+			System.out.println("error:" + e);
+		} finally {
+			try {
+				if(pstmt != null) {
+					pstmt.close();
+				}
+				if(conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+	
+	public boolean updateNo(BoardVo boardVo) {
+		boolean result = false;
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+				
+		try {
+			conn = getConnection();
+			
+			// 3. SQL 준비
+			String sql = " update" +
+					"   board set title = ?, contents = ?" +
+					" where no = ?";
+			pstmt = conn.prepareStatement(sql);
+			
+			// 4. 바인딩
+			pstmt.setString(1, boardVo.getTitle());
+			pstmt.setString(2, boardVo.getContents());
+			pstmt.setLong(3, boardVo.getNo());
+			
+			// 5. sql문 실행
+			int count = pstmt.executeUpdate();
+			
+			result = count == 1;
+			
+		} catch (SQLException e) {
+			System.out.println("error:" + e);
+		} finally {
+			try {
+				if(pstmt != null) {
+					pstmt.close();
+				}
+				if(conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+	
 	public boolean updateHitbyNo(Long no) {
 		boolean result = false;
 		
@@ -257,6 +393,46 @@ public class BoardRepository {
 			
 			// 4. 바인딩
 			pstmt.setLong(1, no);
+			
+			// 5. sql문 실행
+			int count = pstmt.executeUpdate();
+			
+			result = count == 1;
+			
+		} catch (SQLException e) {
+			System.out.println("error:" + e);
+		} finally {
+			try {
+				if(pstmt != null) {
+					pstmt.close();
+				}
+				if(conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+	
+	public boolean delete(BoardVo boardVo) {
+		boolean result = false;
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+				
+		try {
+			conn = getConnection();
+			
+			// 3. SQL 준비
+			String sql = " delete from" +
+					"   board where no = ?";
+					
+			pstmt = conn.prepareStatement(sql);
+			
+			// 4. 바인딩
+			pstmt.setLong(1, boardVo.getNo());
 			
 			// 5. sql문 실행
 			int count = pstmt.executeUpdate();

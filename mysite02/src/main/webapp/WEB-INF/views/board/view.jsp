@@ -37,11 +37,11 @@
 					<a href="${pageContext.request.contextPath }/board?page=1">글목록</a>
 					<c:if test='${ not empty authUser }'>
 						<c:if test='${ authUser.name == param.name }'>
-							<a href="${pageContext.request.contextPath }/board?a=modify">글수정</a>
+							<a href="${pageContext.request.contextPath }/board?a=modifyform&no=${ boardVo.no }&name=${ param.name }">글수정</a>
 						</c:if>
 					</c:if>
 					<c:if test='${ not empty authUser }'>
-						<a href="${pageContext.request.contextPath }/board?a=reply">답글</a>
+						<a href="${pageContext.request.contextPath }/board?a=replyform&gno=${ boardVo.groupNo }&ono=${ boardVo.orderNo }&depth=${ boardVo.depth }&no=${ param.no }&name=${ param.name }">답글</a>
 					</c:if>
 				</div>
 			</div>

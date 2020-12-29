@@ -48,7 +48,7 @@
 							<td>${ board.regDate }</td>
 							<td><c:if test='${ not empty authUser }'>
 									<c:if test='${ authUser.name == board.userName }'>
-										<a href="${ pageContext.request.contextPath}/board?a=delete" class="del">삭제</a>
+										<a href="${ pageContext.request.contextPath}/board?a=delete&no=${board.no}&name=${board.userName}&page=${ currentPage }" class="del">삭제</a>
 									</c:if>
 								</c:if></td>
 						</tr>

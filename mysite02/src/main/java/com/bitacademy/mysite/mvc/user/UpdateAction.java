@@ -24,13 +24,15 @@ public class UpdateAction implements Action {
 		HttpSession session = request.getSession(false);
 		UserVo userVo = null;
 
-		userVo = (UserVo) session.getAttribute("authUser");
+		if (session != null) {
+			userVo = (UserVo) session.getAttribute("authUser");
+		}
 
 		if (userVo == null) {
 			WebUtil.forward(request, response, "WEB-INF/views/main/index.jsp");
 			return;
 		} else {
-
+			
 			userVo.setName(request.getParameter("name"));
 			userVo.setPassword(request.getParameter("password"));
 
