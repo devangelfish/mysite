@@ -5,40 +5,36 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.bitacademy.mysite.vo.UserVo;
+import com.bitacademy.mysite.vo.BoardVo;
 
-public class UserRepository {
-	public UserVo findByNo(Long no) {
-		UserVo userVo = null;
+public class BoardRepository {
+	public int getBoardVoCount() {
 		Connection conn = null;
-		PreparedStatement pstmt = null;
+		Statement stmt = null;
 		ResultSet rs = null;
+		int result = 0;
 				
 		try {
 			conn = getConnection();
 			
 			// 3. SQL 준비
 			String sql =
-				"   select name" +
-				"     from user" +
-				" where no=?";
-			pstmt = conn.prepareStatement(sql);
+				"select count(*) from board a join user b on a.user_no = b.no";
+			stmt = conn.createStatement();
 			
 			// 4. 바인딩
-			pstmt.setLong(1, no);
 			
 			// 5. sql문 실행
-			rs = pstmt.executeQuery();
+			 rs = stmt.executeQuery(sql);
 			
 			// 6. 데이터 가져오기
-			if(rs.next()) {
-				String name = rs.getString(1);
-				
-				userVo = new UserVo();
-				userVo.setNo(no);
-				userVo.setName(name);
-			}
+			 if(rs.next()) {
+				 result = rs.getInt(1);
+			 }
 			
 		} catch (SQLException e) {
 			System.out.println("error:" + e);
@@ -48,8 +44,8 @@ public class UserRepository {
 				if(rs != null) {
 					rs.close();
 				}
-				if(pstmt != null) {
-					pstmt.close();
+				if(stmt != null) {
+					stmt.close();
 				}
 				if(conn != null) {
 					conn.close();
@@ -57,12 +53,13 @@ public class UserRepository {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
-		}
-		return userVo;
+		}	
+		return result;
 	}
 	
-	public UserVo findByEmailAndPassword(UserVo vo) {
-		UserVo userVo = null;
+	public List<BoardVo> fetch(int page) {
+		List<BoardVo> list = new ArrayList<>();
+		
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -72,29 +69,43 @@ public class UserRepository {
 			
 			// 3. SQL 준비
 			String sql =
-				"   select no, name, email" +
-				"     from user" +
-				" where email=?" +
-				" and password=?";
+				"   select a.no, a.title, a.contents, date_format(a.reg_date, '%Y/%m/%d %H:%i:%s') as reg_date," +  
+				"     a.hit, a.group_no, a.order_no, a.depth, b.name" +
+				"     from board a join user b" +
+				" on a.user_no = b.no" +
+				" order by a.group_no desc, a.order_no asc" +
+				" limit ?, 5";
 			pstmt = conn.prepareStatement(sql);
 			
 			// 4. 바인딩
-			pstmt.setString(1, vo.getEmail());
-			pstmt.setString(2, vo.getPassword());
+			pstmt.setInt(1, (page-1)*5);
 			
 			// 5. sql문 실행
 			rs = pstmt.executeQuery();
 			
 			// 6. 데이터 가져오기
-			if(rs.next()) {
+			while(rs.next()) {
 				Long no = rs.getLong(1);
-				String name = rs.getString(2);
-				String email = rs.getString(3);
+				String title = rs.getString(2);
+				String contents = rs.getString(3);
+				String regDate = rs.getString(4);
+				Long hit = rs.getLong(5);
+				Long groupNo = rs.getLong(6);
+				Integer orderNo = rs.getInt(7);
+				Integer depth = rs.getInt(8);
+				String userName = rs.getString(9);
 				
-				userVo = new UserVo();
-				userVo.setNo(no);
-				userVo.setName(name);
-				userVo.setEmail(email);
+				BoardVo vo = new BoardVo();
+				vo.setNo(no);
+				vo.setTitle(title);
+				vo.setContents(contents);
+				vo.setRegDate(regDate);
+				vo.setHit(hit);
+				vo.setGroupNo(groupNo);
+				vo.setOrderNo(orderNo);
+				vo.setDepth(depth);
+				vo.setUserName(userName);
+				list.add(vo);
 			}
 			
 		} catch (SQLException e) {
@@ -115,29 +126,30 @@ public class UserRepository {
 				e.printStackTrace();
 			}
 		}
-		return userVo;
+		
+		return list;
 	}
 	
-	public boolean insert(UserVo userVo) {
+	public boolean write(BoardVo boardVo) {
 		boolean result = false;
 
 		Connection conn = null;
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try {
 			conn = getConnection();
 			
 			// 3. SQL 준비
 			String sql =
 					" insert" +
-					"   into user" +
-					" values(null, ?, ?, ?, ?, now())";
+					"   into board" +
+					" values(null, ?, ?, now(), 0, (select ifnull(max(group_no), 0) from board b) + 1, 1, 1, ?)";
 			pstmt = conn.prepareStatement(sql);
 			
 			// 4. 바인딩
-			pstmt.setString(1, userVo.getName());
-			pstmt.setString(2, userVo.getEmail());
-			pstmt.setString(3, userVo.getPassword());
-			pstmt.setString(4, userVo.getGender());
+			pstmt.setString(1, boardVo.getTitle());
+			pstmt.setString(2, boardVo.getContents());
+			pstmt.setLong(3, boardVo.getUserNo());
 			
 			// 5. sql문 실행
 			int count = pstmt.executeUpdate();
@@ -149,6 +161,9 @@ public class UserRepository {
 		} finally {
 			try {
 				// 3. 자원정리
+				if(rs != null) {
+					rs.close();
+				}
 				if(pstmt != null) {
 					pstmt.close();
 				}
@@ -162,50 +177,7 @@ public class UserRepository {
 		
 		return result;
 	}
-	
-	public boolean update(UserVo vo) {
-		boolean result = false;
-		
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-				
-		try {
-			conn = getConnection();
-			
-			// 3. SQL 준비
-			String sql =
-				"   update user" +
-				"     set name=?, password=?" +
-				" where no=?";
-			pstmt = conn.prepareStatement(sql);
-			
-			// 4. 바인딩
-			pstmt.setString(1, vo.getName());
-			pstmt.setString(2, vo.getPassword());
-			pstmt.setLong(3, vo.getNo());
-			
-			// 5. sql문 실행
-			int count = pstmt.executeUpdate();
-			
-			result = count == 1;
-			
-		} catch (SQLException e) {
-			System.out.println("error:" + e);
-		} finally {
-			try {
-				if(pstmt != null) {
-					pstmt.close();
-				}
-				if(conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		return result;
-	}
-	
+
 	private Connection getConnection() throws SQLException{
 		Connection conn = null;
 		try {
