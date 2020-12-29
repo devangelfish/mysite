@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.bitacademy.mysite.vo.BoardVo;
+import com.bitacademy.mysite.vo.UserVo;
 
 public class BoardRepository {
 	public int getBoardVoCount() {
@@ -175,6 +176,107 @@ public class BoardRepository {
 			}
 		}		
 		
+		return result;
+	}
+	
+	public BoardVo findByNo(Long no) {
+		BoardVo boardVo = null;
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+				
+		try {
+			conn = getConnection();
+			
+			// 3. SQL 준비
+			String sql =
+				"   select title, contents, group_no, order_no, depth" +
+				"     from board" +
+				" where no=?";
+			pstmt = conn.prepareStatement(sql);
+			
+			// 4. 바인딩
+			pstmt.setLong(1, no);
+			
+			// 5. sql문 실행
+			rs = pstmt.executeQuery();
+			
+			// 6. 데이터 가져오기
+			if(rs.next()) {
+				String title = rs.getString(1);
+				String contents = rs.getString(2);
+				Long groupNo = rs.getLong(3);
+				Integer orderNo = rs.getInt(4);
+				Integer depth = rs.getInt(5);
+				
+				boardVo = new BoardVo();
+				boardVo.setNo(no);
+				boardVo.setTitle(title);
+				boardVo.setContents(contents);
+				boardVo.setGroupNo(groupNo);
+				boardVo.setOrderNo(orderNo);
+				boardVo.setDepth(depth);
+			}
+			
+		} catch (SQLException e) {
+			System.out.println("error:" + e);
+		} finally {
+			try {
+				// 3. 자원정리
+				if(rs != null) {
+					rs.close();
+				}
+				if(pstmt != null) {
+					pstmt.close();
+				}
+				if(conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return boardVo;
+	}
+	
+	public boolean updateHitbyNo(Long no) {
+		boolean result = false;
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+				
+		try {
+			conn = getConnection();
+			
+			// 3. SQL 준비
+			String sql =
+				"   update board" +
+				"     set hit=hit+1" +
+				" where no=?";
+			pstmt = conn.prepareStatement(sql);
+			
+			// 4. 바인딩
+			pstmt.setLong(1, no);
+			
+			// 5. sql문 실행
+			int count = pstmt.executeUpdate();
+			
+			result = count == 1;
+			
+		} catch (SQLException e) {
+			System.out.println("error:" + e);
+		} finally {
+			try {
+				if(pstmt != null) {
+					pstmt.close();
+				}
+				if(conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 		return result;
 	}
 
