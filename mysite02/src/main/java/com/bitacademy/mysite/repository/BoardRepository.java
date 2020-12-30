@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.bitacademy.mysite.vo.BoardVo;
-import com.bitacademy.mysite.vo.UserVo;
 
 public class BoardRepository {
 	public int getBoardVoCount() {
@@ -24,7 +23,7 @@ public class BoardRepository {
 			
 			// 3. SQL 준비
 			String sql =
-				"select count(*) from board a join user b on a.user_no = b.no";
+				"select count(*) from board";
 			stmt = conn.createStatement();
 			
 			// 4. 바인딩
@@ -58,6 +57,54 @@ public class BoardRepository {
 		return result;
 	}
 	
+	public int getBoardVoCountbyKeyword(String keyword) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String wildCard = "%" + keyword + "%";
+		int result = 0;
+				
+		try {
+			conn = getConnection();
+			
+			// 3. SQL 준비
+			String sql =
+				"select count(*) from board where title like ? or contents like ?";
+			pstmt = conn.prepareStatement(sql);
+			
+			// 4. 바인딩
+			pstmt.setString(1, wildCard);
+			pstmt.setString(2, wildCard);
+			
+			// 5. sql문 실행
+			 rs = pstmt.executeQuery();
+			
+			// 6. 데이터 가져오기
+			 if(rs.next()) {
+				 result = rs.getInt(1);
+			 }
+			
+		} catch (SQLException e) {
+			System.out.println("error:" + e);
+		} finally {
+			try {
+				// 3. 자원정리
+				if(rs != null) {
+					rs.close();
+				}
+				if(pstmt != null) {
+					pstmt.close();
+				}
+				if(conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}	
+		return result;
+	}
+	
 	public List<BoardVo> fetch(int page) {
 		List<BoardVo> list = new ArrayList<>();
 		
@@ -80,6 +127,83 @@ public class BoardRepository {
 			
 			// 4. 바인딩
 			pstmt.setInt(1, (page-1)*5);
+			
+			// 5. sql문 실행
+			rs = pstmt.executeQuery();
+			
+			// 6. 데이터 가져오기
+			while(rs.next()) {
+				Long no = rs.getLong(1);
+				String title = rs.getString(2);
+				String contents = rs.getString(3);
+				String regDate = rs.getString(4);
+				Long hit = rs.getLong(5);
+				Long groupNo = rs.getLong(6);
+				Integer orderNo = rs.getInt(7);
+				Integer depth = rs.getInt(8);
+				String userName = rs.getString(9);
+				
+				BoardVo vo = new BoardVo();
+				vo.setNo(no);
+				vo.setTitle(title);
+				vo.setContents(contents);
+				vo.setRegDate(regDate);
+				vo.setHit(hit);
+				vo.setGroupNo(groupNo);
+				vo.setOrderNo(orderNo);
+				vo.setDepth(depth);
+				vo.setUserName(userName);
+				list.add(vo);
+			}
+			
+		} catch (SQLException e) {
+			System.out.println("error:" + e);
+		} finally {
+			try {
+				// 3. 자원정리
+				if(rs != null) {
+					rs.close();
+				}
+				if(pstmt != null) {
+					pstmt.close();
+				}
+				if(conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return list;
+	}
+	
+	public List<BoardVo> keywordFetch(int page, String keyword) {
+		List<BoardVo> list = new ArrayList<>();
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String wildCard = "%" + keyword + "%";
+		
+		try {
+			conn = getConnection();
+			
+			// 3. SQL 준비
+			String sql =
+				"   select a.no, a.title, a.contents, date_format(a.reg_date, '%Y/%m/%d %H:%i:%s') as reg_date," +  
+				"     a.hit, a.group_no, a.order_no, a.depth, b.name" +
+				"     from board a join user b" +
+				" on a.user_no = b.no" +
+				" where a.title like ? or a.contents like ?" +
+				" order by a.group_no desc, a.order_no asc" +
+				" limit ?, 5";
+			pstmt = conn.prepareStatement(sql);
+			
+			// 4. 바인딩
+			pstmt.setString(1, wildCard);
+			pstmt.setString(2, wildCard);
+			pstmt.setInt(3, (page-1)*5);
 			
 			// 5. sql문 실행
 			rs = pstmt.executeQuery();

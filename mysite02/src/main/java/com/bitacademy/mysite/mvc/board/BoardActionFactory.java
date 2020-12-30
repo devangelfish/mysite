@@ -18,6 +18,8 @@ public class BoardActionFactory extends ActionFactory {
 			action = new ReplyAction();
 		} else if("view".equals(actionName)) {
 			action = new ViewAction();
+		} else if("keywordlist".equals(actionName)) {
+			action = new KewordListAction();
 		} else if("delete".equals(actionName)) {
 			action = new DeleteAction();
 		} else if("modifyform".equals(actionName)) {
