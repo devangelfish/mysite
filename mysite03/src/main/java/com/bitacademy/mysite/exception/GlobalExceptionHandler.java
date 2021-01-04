@@ -9,7 +9,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(Exception.class)
 	public String handleException(Exception e) throws Exception {
 		// 1. 로깅(Logging)
-		System.out.println(e.toString());
+		e.printStackTrace();
 		
 		// 2. 사과(안내페이지 포워딩)
 		return "error/exception";

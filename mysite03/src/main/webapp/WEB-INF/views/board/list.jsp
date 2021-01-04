@@ -15,13 +15,13 @@
 <body>
 	<div id="container">
 		<c:import url="/WEB-INF/views/includes/header.jsp" />
-		<c:set var='limitPage' value='${pageLimit}' />
-		<c:set var='currentPage' value='${param.page}' />
+		<c:set var='availablePage' value='${lastPage}' />
+		<c:set var='currentPage' value='${page}' />
 
 		<div id="content">
 			<div id="board">
 				<form id="search_form"
-					action="${ pageContext.request.contextPath}/board?a=keywordlist"
+					action="${ pageContext.request.contextPath}/board/search"
 					method="post">
 					<input type="text" id="kwd" name="keyword" value=""> <input
 						type="hidden" name="page" value="1"> <input
@@ -41,7 +41,7 @@
 						<tr>
 							<td>${ status.count + ( (currentPage - 1) * 5 ) }</td>
 							<td style='text-align: left; padding-left: ${board.depth * 20}px'><a
-								href="${ pageContext.request.contextPath}/board?a=view&no=${board.no}&name=${board.userName}">
+								href="${ pageContext.request.contextPath}/board/${currentPage}/view/${board.no}/${board.userName}">
 									<c:if test='${ board.depth > 1 }'>
 										<img
 											src='${pageContext.servletContext.contextPath }/assets/images/reply.png' />
@@ -53,7 +53,7 @@
 							<td><c:if test='${ not empty authUser }'>
 									<c:if test='${ authUser.name == board.userName }'>
 										<a
-											href="${ pageContext.request.contextPath}/board?a=delete&no=${board.no}&name=${board.userName}&page=${ currentPage }"
+											href="${ pageContext.request.contextPath}/board/${currentPage}/delete/${board.no}/${board.userName}"
 											class="del">삭제</a>
 									</c:if>
 								</c:if></td>
@@ -67,14 +67,14 @@
 						<c:choose>
 							<c:when test="${ currentPage > 1 }">
 								<c:choose>
-									<c:when test="${ not empty param.keyword }">
+									<c:when test="${ not empty keyword }">
 										<li><a
-											href="${pageContext.request.contextPath}/board?a=keywordlist&keyword=${param.keyword}&page=${currentPage - 1}">◀</a>
+											href="${pageContext.request.contextPath}/board?a=keywordlist&keyword=${param.keyword}&page=${currentPage-1}">◀</a>
 										</li>
 									</c:when>
 									<c:otherwise>
 										<li><a
-											href="${ pageContext.request.contextPath}/board?page=${currentPage - 1}">◀</a></li>
+											href="${ pageContext.request.contextPath}/board/${currentPage-1}">◀</a></li>
 									</c:otherwise>
 								</c:choose>
 							</c:when>
@@ -86,21 +86,21 @@
 						<c:forEach begin='${ index }' end='${ index + 4 }' var='i'
 							step='1'>
 							<c:choose>
-								<c:when test="${ i <= limitPage }">
+								<c:when test="${ i <= availablePage }">
 									<c:choose>
 										<c:when test="${ currentPage == i }">
 											<li class="selected">${ i }</li>
 										</c:when>
 										<c:otherwise>
 											<c:choose>
-												<c:when test="${ not empty param.keyword }">
+												<c:when test="${ not empty keyword }">
 													<li><a
 														href="${pageContext.request.contextPath}/board?a=keywordlist&keyword=${param.keyword}&page=${i}">${ i }</a>
 													</li>
 												</c:when>
 												<c:otherwise>
 													<li><a
-														href="${ pageContext.request.contextPath}/board?page=${ i }">${ i }</a>
+														href="${ pageContext.request.contextPath}/board/${i}">${i}</a>
 													</li>
 												</c:otherwise>
 											</c:choose>
@@ -114,16 +114,16 @@
 						</c:forEach>
 
 						<c:choose>
-							<c:when test="${ currentPage < limitPage }">
+							<c:when test="${ currentPage < availablePage }">
 								<c:choose>
-									<c:when test="${ not empty param.keyword }">
+									<c:when test="${ not empty keyword }">
 										<li><a
 											href="${pageContext.request.contextPath}/board?a=keywordlist&keyword=${param.keyword}&page=${currentPage + 1}">▶</a>
 										</li>
 									</c:when>
 									<c:otherwise>
 										<li><a
-											href="${ pageContext.request.contextPath}/board?page=${currentPage + 1}">▶</a></li>
+											href="${ pageContext.request.contextPath}/board/${currentPage+1}">▶</a></li>
 									</c:otherwise>
 								</c:choose>
 								<!-- <li><a
@@ -140,7 +140,7 @@
 				<div class="bottom">
 					<c:if test="${ not empty authUser }">
 						<a
-							href="${pageContext.servletContext.contextPath }/board?a=writeform"
+							href="${pageContext.servletContext.contextPath }/board/write"
 							id="new-book">글쓰기</a>
 					</c:if>
 				</div>
