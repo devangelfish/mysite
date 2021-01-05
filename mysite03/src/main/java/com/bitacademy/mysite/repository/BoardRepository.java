@@ -1,7 +1,6 @@
 package com.bitacademy.mysite.repository;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,12 +8,19 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.bitacademy.mysite.exception.BoardRepositoryException;
 import com.bitacademy.mysite.vo.BoardVo;
 
 @Repository
 public class BoardRepository {
+	@Autowired
+	private DataSource dataSource;
+	
 	public int getBoardVoCount() {
 		Connection conn = null;
 		Statement stmt = null;
@@ -22,7 +28,7 @@ public class BoardRepository {
 		int result = 0;
 				
 		try {
-			conn = getConnection();
+			conn = dataSource.getConnection();
 			
 			// 3. SQL 준비
 			String sql =
@@ -40,7 +46,7 @@ public class BoardRepository {
 			 }
 			
 		} catch (SQLException e) {
-			System.out.println("error:" + e);
+			throw new BoardRepositoryException(e.toString());
 		} finally {
 			try {
 				// 3. 자원정리
@@ -68,7 +74,7 @@ public class BoardRepository {
 		int result = 0;
 				
 		try {
-			conn = getConnection();
+			conn = dataSource.getConnection();
 			
 			// 3. SQL 준비
 			String sql =
@@ -88,7 +94,7 @@ public class BoardRepository {
 			 }
 			
 		} catch (SQLException e) {
-			System.out.println("error:" + e);
+			throw new BoardRepositoryException(e.toString());
 		} finally {
 			try {
 				// 3. 자원정리
@@ -116,7 +122,7 @@ public class BoardRepository {
 		ResultSet rs = null;
 				
 		try {
-			conn = getConnection();
+			conn = dataSource.getConnection();
 			
 			// 3. SQL 준비
 			String sql =
@@ -160,7 +166,7 @@ public class BoardRepository {
 			}
 			
 		} catch (SQLException e) {
-			System.out.println("error:" + e);
+			throw new BoardRepositoryException(e.toString());
 		} finally {
 			try {
 				// 3. 자원정리
@@ -190,7 +196,7 @@ public class BoardRepository {
 		String wildCard = "%" + keyword + "%";
 		
 		try {
-			conn = getConnection();
+			conn = dataSource.getConnection();
 			
 			// 3. SQL 준비
 			String sql =
@@ -237,7 +243,7 @@ public class BoardRepository {
 			}
 			
 		} catch (SQLException e) {
-			System.out.println("error:" + e);
+			throw new BoardRepositoryException(e.toString());
 		} finally {
 			try {
 				// 3. 자원정리
@@ -265,7 +271,7 @@ public class BoardRepository {
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {
-			conn = getConnection();
+			conn = dataSource.getConnection();
 			
 			// 3. SQL 준비
 			String sql =
@@ -285,7 +291,7 @@ public class BoardRepository {
 			result = count == 1;
 			
 		} catch (SQLException e) {
-			System.out.println("error:" + e);
+			throw new BoardRepositoryException(e.toString());
 		} finally {
 			try {
 				// 3. 자원정리
@@ -313,7 +319,7 @@ public class BoardRepository {
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {
-			conn = getConnection();
+			conn = dataSource.getConnection();
 			
 			// 3. SQL 준비
 			String sql =
@@ -338,7 +344,7 @@ public class BoardRepository {
 			result = count == 1;
 			
 		} catch (SQLException e) {
-			System.out.println("error:" + e);
+			throw new BoardRepositoryException(e.toString());
 		} finally {
 			try {
 				// 3. 자원정리
@@ -366,7 +372,7 @@ public class BoardRepository {
 		ResultSet rs = null;
 				
 		try {
-			conn = getConnection();
+			conn = dataSource.getConnection();
 			
 			// 3. SQL 준비
 			String sql =
@@ -399,7 +405,7 @@ public class BoardRepository {
 			}
 			
 		} catch (SQLException e) {
-			System.out.println("error:" + e);
+			throw new BoardRepositoryException(e.toString());
 		} finally {
 			try {
 				// 3. 자원정리
@@ -426,7 +432,7 @@ public class BoardRepository {
 		PreparedStatement pstmt = null;
 				
 		try {
-			conn = getConnection();
+			conn = dataSource.getConnection();
 			
 			// 3. SQL 준비
 			String sql = " update" +
@@ -444,7 +450,7 @@ public class BoardRepository {
 			result = count == 1;
 			
 		} catch (SQLException e) {
-			System.out.println("error:" + e);
+			throw new BoardRepositoryException(e.toString());
 		} finally {
 			try {
 				if(pstmt != null) {
@@ -467,7 +473,7 @@ public class BoardRepository {
 		PreparedStatement pstmt = null;
 				
 		try {
-			conn = getConnection();
+			conn = dataSource.getConnection();
 			
 			// 3. SQL 준비
 			String sql = " update" +
@@ -486,7 +492,7 @@ public class BoardRepository {
 			result = count == 1;
 			
 		} catch (SQLException e) {
-			System.out.println("error:" + e);
+			throw new BoardRepositoryException(e.toString());
 		} finally {
 			try {
 				if(pstmt != null) {
@@ -509,7 +515,7 @@ public class BoardRepository {
 		PreparedStatement pstmt = null;
 				
 		try {
-			conn = getConnection();
+			conn = dataSource.getConnection();
 			
 			// 3. SQL 준비
 			String sql =
@@ -527,7 +533,7 @@ public class BoardRepository {
 			result = count == 1;
 			
 		} catch (SQLException e) {
-			System.out.println("error:" + e);
+			throw new BoardRepositoryException(e.toString());
 		} finally {
 			try {
 				if(pstmt != null) {
@@ -550,7 +556,7 @@ public class BoardRepository {
 		PreparedStatement pstmt = null;
 				
 		try {
-			conn = getConnection();
+			conn = dataSource.getConnection();
 			
 			// 3. SQL 준비
 			String sql = " delete from" +
@@ -567,7 +573,7 @@ public class BoardRepository {
 			result = count == 1;
 			
 		} catch (SQLException e) {
-			System.out.println("error:" + e);
+			throw new BoardRepositoryException(e.toString());
 		} finally {
 			try {
 				if(pstmt != null) {
@@ -581,21 +587,5 @@ public class BoardRepository {
 			}
 		}
 		return result;
-	}
-
-	private Connection getConnection() throws SQLException{
-		Connection conn = null;
-		try {
-			// 1. JDBC Driver 로딩
-			Class.forName("org.mariadb.jdbc.Driver");
-			
-			// 2. 연결하기
-			String url = "jdbc:mysql://192.168.1.41:3307/webdb?characterEncoding=utf8";
-			conn = DriverManager.getConnection(url, "webdb", "webdb");
-		} catch (ClassNotFoundException e) {
-			System.out.println("드라이버 로딩 실패:" + e);
-		}
-		
-		return conn;
 	}
 }
