@@ -26,6 +26,12 @@ public class GuestbookController {
 		return "guestbook/index";
 	}
 	
+	@RequestMapping("/add")
+	public String add(GuestbookVo vo) {
+		guestbookService.writeMessage(vo);
+		return "redirect:/guestbook";
+	}
+	
 	@RequestMapping(value="/delete/{no}", method=RequestMethod.GET)
 	public String delete(@PathVariable("no") Long no, Model model) {
 		model.addAttribute("no", no);
@@ -34,7 +40,6 @@ public class GuestbookController {
 	
 	@RequestMapping(value="/delete", method=RequestMethod.POST)
 	public String delete(GuestbookVo vo) {
-		System.out.println(vo);
 		guestbookService.deleteMessage(vo);
 		return "redirect:/guestbook";
 	}

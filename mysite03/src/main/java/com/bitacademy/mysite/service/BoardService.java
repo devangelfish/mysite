@@ -23,7 +23,7 @@ public class BoardService {
 	}
 	
 	public int getLastPage(int page) {
-		return (int)Math.ceil(new BoardRepository().getBoardVoCount() / 5.0);
+		return (int)Math.ceil(boardRepository.getBoardVoCount() / 5.0);
 	}
 	
 	public void increaseHit(Long no) {

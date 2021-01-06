@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.bitacademy.mysite.repository.BoardRepository;
 import com.bitacademy.mysite.service.BoardService;
 import com.bitacademy.mysite.vo.BoardVo;
 import com.bitacademy.mysite.vo.UserVo;
+import com.bitacademy.security.Auth;
 
 @Controller
 @RequestMapping("/board")
@@ -102,12 +102,9 @@ public class BoardController {
 		return "redirect:/board/" + page;
 	}
 	
+	@Auth
 	@RequestMapping(value="/write", method=RequestMethod.GET)
-	public String write(HttpSession session) {
-		UserVo authUser = (UserVo)session.getAttribute("authUser");
-		if(authUser == null) {
-			return "redirect:/";
-		}
+	public String write() {
 		return "board/write";
 	}
 	
