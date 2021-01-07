@@ -37,7 +37,7 @@
 					<a href="${pageContext.request.contextPath }/board/${page}">글목록</a>
 					<c:if test='${ not empty authUser }'>
 						<c:if test='${ authUser.name == name }'>
-							<a href="${pageContext.request.contextPath }/board/${page}/modify/${boardVo.no}/${name}">글수정</a>
+							<a href="${pageContext.request.contextPath }/board/${page}/modify/${no}/${name}">글수정</a>
 						</c:if>
 					</c:if>
 					<c:if test='${ not empty authUser }'>

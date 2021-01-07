@@ -2,8 +2,6 @@ package com.bitacademy.mysite.controller;
 
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,7 +14,9 @@ import com.bitacademy.mysite.service.BoardService;
 import com.bitacademy.mysite.vo.BoardVo;
 import com.bitacademy.mysite.vo.UserVo;
 import com.bitacademy.security.Auth;
+import com.bitacademy.security.AuthUser;
 
+@Auth
 @Controller
 @RequestMapping("/board")
 public class BoardController {
@@ -31,7 +31,6 @@ public class BoardController {
 		model.addAttribute("boardList", boardList);
 		model.addAttribute("index", index);
 		model.addAttribute("lastPage", lastPage);
-		model.addAttribute("page", page);
 		return "board/list";
 	}
 	
@@ -40,61 +39,29 @@ public class BoardController {
 		boardService.increaseHit(no);
 		BoardVo boardVo = boardService.getContents(no);
 		model.addAttribute("boardVo", boardVo);
-		model.addAttribute("page", page);
-		model.addAttribute("name", name);
 		model.addAttribute("newLine", "\n");
 		return "board/view";
 	}
 	
 	@RequestMapping(value="/{page}/modify/{no}/{name}", method=RequestMethod.GET)
-	public String modify(@PathVariable(value="page") int page, @PathVariable(value="no") Long no, @PathVariable(value="name") String name, HttpSession session, Model model) {
-		UserVo userVo = null;
-
-		if(session != null) {
-			userVo = (UserVo) session.getAttribute("authUser");
-		}
-
-		if (userVo == null) {
-			return "redirect:/";
-		}
+	public String modify(@PathVariable(value="page") int page, @PathVariable(value="no") Long no, @PathVariable(value="name") String name, Model model) {
 		BoardVo boardVo = boardService.getContents(no);
 		model.addAttribute("boardVo", boardVo);
 		model.addAttribute("newLine", "\n");
-		model.addAttribute("page", page);
 		return "board/modify";
 	}
 	
 	@RequestMapping(value="/modify", method=RequestMethod.POST)
-	public String modify(@RequestParam(value="page") int page, BoardVo boardVo, HttpSession session, Model model) {
-		UserVo userVo = null;
-
-		if(session != null) {
-			userVo = (UserVo) session.getAttribute("authUser");
-		}
-
-		if (userVo == null) {
-			return "redirect:/";
-		}
-		
+	public String modify(@RequestParam(value="page") int page, BoardVo boardVo, @AuthUser UserVo userVo, Model model) {
 		boardService.editContents(boardVo);	
 		model.addAttribute("boardVo", boardVo);
-		model.addAttribute("page", page);
 		model.addAttribute("name", userVo.getName());
 		model.addAttribute("newLine", "\n");
 		return "board/view";
 	}
 	
 	@RequestMapping("/{page}/delete/{no}/{name}")
-	public String delete(@PathVariable(value="page") int page, @PathVariable(value="no") Long no, @PathVariable(value="name") String name, HttpSession session, Model model) {
-		UserVo userVo = null;
-
-		if(session != null) {
-			userVo = (UserVo) session.getAttribute("authUser");
-		}
-
-		if (userVo == null) {
-			return "redirect:/";
-		}
+	public String delete(@PathVariable(value="page") int page, @PathVariable(value="no") Long no, @PathVariable(value="name") String name, Model model) {
 		BoardVo boardVo = new BoardVo();
 		boardVo.setUserName(name);
 		boardVo.setNo(no);
@@ -102,42 +69,28 @@ public class BoardController {
 		return "redirect:/board/" + page;
 	}
 	
-	@Auth
 	@RequestMapping(value="/write", method=RequestMethod.GET)
 	public String write() {
 		return "board/write";
 	}
 	
 	@RequestMapping(value="/{page}/reply/{gno}/{ono}/{depth}/{no}/{name}", method=RequestMethod.GET)
-	public String reply(HttpSession session,
-						@PathVariable(value="page") int page,
+	public String reply(@PathVariable(value="page") int page,
 						@PathVariable(value="gno") Long groupNo,
 						@PathVariable(value="ono") int orderNo,
 						@PathVariable(value="depth") int depth,
 						@PathVariable(value="no") Long no,
 						@PathVariable(value="name") String name,
 						Model model) {
-		UserVo authUser = (UserVo)session.getAttribute("authUser");
-		if(authUser == null) {
-			return "redirect:/";
-		}
 		BoardVo boardVo = new BoardVo();
 		boardVo.setGroupNo(groupNo);
 		boardVo.setOrderNo(orderNo);
 		boardVo.setDepth(depth);
-		model.addAttribute("vo", boardVo);
-		model.addAttribute("no", no);
-		model.addAttribute("name", name);
-		model.addAttribute("page", page);
 		return "board/reply";
 	}
 	
 	@RequestMapping(value="/reply", method=RequestMethod.POST)
-	public String reply(HttpSession session, BoardVo vo) {
-		UserVo authUser = (UserVo)session.getAttribute("authUser");
-		if(authUser == null) {
-			return "redirect:/";
-		}
+	public String reply(BoardVo vo) {
 		BoardVo parentVo = new BoardVo();
 		parentVo.setGroupNo(vo.getGroupNo());
 		parentVo.setOrderNo(vo.getOrderNo());
@@ -147,11 +100,7 @@ public class BoardController {
 	}	
 	
 	@RequestMapping(value="/write", method=RequestMethod.POST)
-	public String write(BoardVo vo, HttpSession session) {
-		UserVo authUser = (UserVo)session.getAttribute("authUser");
-		if(authUser == null) {
-			return "redirect:/";
-		}
+	public String write(BoardVo vo) {
 		boardService.writeContents(vo);
 		return "redirect:/board/1";
 	}

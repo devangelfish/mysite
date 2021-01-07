@@ -29,6 +29,9 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 		// String role = auth.value();
 		//4. Method에 @Auth가 안붙어 있는 경우, Type(Class)에 붙어 있는지 확인한다.(과제)
 		// if(auth == null) {
+		if(auth == null) {
+			auth = handlerMethod.getBeanType().getAnnotation(Auth.class);
+		}
 		// }
 		
 		//String role = auth.Value();

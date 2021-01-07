@@ -15,7 +15,7 @@ public class BoardService {
 	private BoardRepository boardRepository;
 	
 	public List<BoardVo> getBoardList(int page) {
-		return boardRepository.fetch(page);
+		return boardRepository.fetch((page-1)*5);
 	}
 
 	public int getIndex(int page) {

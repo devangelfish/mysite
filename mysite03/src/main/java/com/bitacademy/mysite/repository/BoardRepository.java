@@ -16,7 +16,6 @@ public class BoardRepository {
 	private SqlSession sqlSession;
 	
 	public int getBoardVoCount() {
-		int value = sqlSession.selectOne("board.count");
 		return sqlSession.selectOne("board.count");
 	}
 	

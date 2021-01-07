@@ -9,7 +9,7 @@
 		select count(*) from board where title like '%${keyword}%' or contents like %${keyword}%
 	</select>
 	
-	<select id="fetch" parameterType="integer" resultType="boardvo">
+	<select id="fetch" parameterType="int" resultType="boardvo">
 		<![CDATA[
 		select a.no, a.title, a.contents, date_format(a.reg_date, '%Y/%m/%d %H:%i:%s') as regDate,
 		 a.hit, a.group_no, a.order_no, a.depth, b.name as userName
@@ -33,15 +33,15 @@
 	</insert>
 	
 	<insert id="reply" parameterType="map">
-		insert into board values(null, #{title}, #{contents}, now(), 0, #{groupNo}, #{orderNo+1}, #{depth+1}, #{userNo})
+		insert into board values(null, #{boardVo.title}, #{boardVo.contents}, now(), 0, #{parentBoardVo.groupNo}, #{parentBoardVo.orderNo} + 1, #{parentBoardVo.depth} + 1, #{boardVo.userNo})
 	</insert>
 	
 	<select id="findByNo" parameterType="long" resultType="boardvo">
 		select title, contents, group_no as groupNo, order_no as orderNo, depth from board where no = #{no}
 	</select>
 	
-	<update id="update" parameterType="boardVo">
-		board set title = #{title}, contents = #{content} where no = #{no}
+	<update id="update" parameterType="boardvo">
+		update board set title = #{title}, contents = #{contents} where no = #{no}
 	</update>
 	
 	<update id="updateOrder" parameterType="boardvo">
