@@ -9,7 +9,7 @@
 		select count(*) from board where title like '%${keyword}%' or contents like %${keyword}%
 	</select>
 	
-	<select id="fetch" parameterType="int" resultType="boardvo">
+	<select id="fetch" parameterType="integer" resultType="boardvo">
 		<![CDATA[
 		select a.no, a.title, a.contents, date_format(a.reg_date, '%Y/%m/%d %H:%i:%s') as regDate,
 		 a.hit, a.group_no, a.order_no, a.depth, b.name as userName

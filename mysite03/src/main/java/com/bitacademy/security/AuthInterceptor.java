@@ -4,12 +4,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import com.bitacademy.mysite.service.UserService;
 import com.bitacademy.mysite.vo.UserVo;
 
 public class AuthInterceptor extends HandlerInterceptorAdapter {
+	@Autowired
+	UserService userService;
 	
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -28,13 +32,10 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 		
 		// String role = auth.value();
 		//4. Method에 @Auth가 안붙어 있는 경우, Type(Class)에 붙어 있는지 확인한다.(과제)
-		// if(auth == null) {
 		if(auth == null) {
 			auth = handlerMethod.getBeanType().getAnnotation(Auth.class);
 		}
 		// }
-		
-		//String role = auth.Value();
 		
 		//5. Method나 Type(Class)에 @Auth가 없는 경우
 		if(auth == null) {
@@ -53,8 +54,16 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 			response.sendRedirect(request.getContextPath() + "/user/login");
 			return false;
 		}
+
 		
 		//7. 권한(Authorization) 체크(과제)
+		if("ADMIN".equals(auth.value())) {;
+			if("USER".equals(authUser.getRole())) {
+				response.sendRedirect(request.getContextPath());
+				return false;
+			}
+		}
+		
 		return true;
 	}
 }
