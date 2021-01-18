@@ -49,9 +49,9 @@ com.bitacademy.config.app
 com.bitacademy.config.web
 com.bitacademy.mysite.config
 
-com.bitacademy.mysite.app.propeties
-com.bitacademy.mysite.app.mybatis
-com.bitacademy.mysite.app.mybatis.mappers
-com.bitacademy.mysite.web.properties
+com.bitacademy.mysite.config.app.propeties
+com.bitacademy.mysite.config.app.mybatis
+com.bitacademy.mysite.config.app.mybatis.mappers
+com.bitacademy.mysite.config.web.properties
 
 
