@@ -7,8 +7,8 @@
 		<typeAlias alias="boardvo" type="com.bitacademy.mysite.vo.BoardVo"/>
 	</typeAliases>	
 	<mappers>
-		<mapper resource="com/bitacademy/mysite/config/app/mybatis/mappers/user.xml" />
-		<mapper resource="com/bitacademy/mysite/config/app/mybatis/mappers/guestbook.xml" />
-		<mapper resource="com/bitacademy/mysite/config/app/mybatis/mappers/board.xml" />
+		<mapper resource="mybatis/mappers/user.xml" />
+		<mapper resource="mybatis/mappers/guestbook.xml" />
+		<mapper resource="mybatis/mappers/board.xml" />
 	</mappers>
 </configuration>
