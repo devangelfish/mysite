@@ -8,6 +8,7 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>mysite06</artifactId>
+	<packaging>war</packaging>
 
 	<dependencyManagement>
 		<dependencies>
@@ -116,6 +117,7 @@
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
 					<warSourceDirectory>src/main/webapp</warSourceDirectory>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -123,7 +125,7 @@
 				<artifactId>tomcat-maven-plugin</artifactId>
 				<configuration>
 					<url>http://192.168.1.41:8080/manager/text</url>
-					<path>${artifactId}</path>
+					<path>/${artifactId}</path>
 					<username>admin</username>
 					<password>manager</password>
 				</configuration>
