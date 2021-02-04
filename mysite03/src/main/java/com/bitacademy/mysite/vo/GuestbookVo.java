@@ -10,7 +10,7 @@ public class GuestbookVo {
 	@Override
 	public String toString() {
 		return "GuestbookVo [no=" + no + ", name=" + name + ", password=" + password + ", message=" + message
-				+ ", toString()=" + super.toString() + "]";
+				+ "]";
 	}
 	
 	public Long getNo() {

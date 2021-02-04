@@ -3,6 +3,7 @@
 			<ul>
 				<li><a href="${pageContext.request.contextPath }">문재범</a></li>
 				<li><a href="${pageContext.request.contextPath }/guestbook">방명록</a></li>
+				<li><a href="${pageContext.request.contextPath }/guestbook/spa">방명록(SPA)</a></li>
 				<li><a href="${pageContext.request.contextPath }/board/1">게시판</a></li>
 			</ul>
 		</div>

@@ -27,4 +27,8 @@ public class UserRepository {
 	public int insert(UserVo vo) throws UserRepositoryException {
 		return sqlSession.insert("user.insert", vo);
 	}
+
+	public UserVo findByEmail(String email) {
+		return sqlSession.selectOne("user.findByEmail", email);
+	}
 }

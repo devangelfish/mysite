@@ -68,6 +68,6 @@
 
 	<context:annotation-config />
 	<context:component-scan
-		base-package="com.bitacademy.mysite.controller, com.bitacademy.mysite.exception" />
+		base-package="com.bitacademy.mysite.controller, com.bitacademy.mysite.controller.api, com.bitacademy.mysite.exception" />
 
 </beans>

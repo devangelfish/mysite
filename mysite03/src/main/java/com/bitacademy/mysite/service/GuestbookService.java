@@ -17,6 +17,10 @@ public class GuestbookService {
 	public List<GuestbookVo> getMessageList() {
 		return guestbookRepository.findAll();
 	}
+	
+	public List<GuestbookVo> getMessageList(Long startNo) {
+		return guestbookRepository.findAll(startNo);
+	}
 
 	public void writeMessage(GuestbookVo vo) {
 		guestbookRepository.insert(vo);
@@ -24,5 +28,6 @@ public class GuestbookService {
 
 	public void deleteMessage(GuestbookVo vo) {
 		guestbookRepository.delete(vo);
-	} 
+	}
+	 
 }
