@@ -85,21 +85,16 @@
 	outline:none;
 }
 
-#guestbook.delete-form	{ height:200px }
-#guestbook.delete-form form {
-	width:300px;
-	padding:10px;
-	border:1px solid #666;
-	border-radius: 10px;
-	margin:50px auto;
+#dialog-delete-form input[type='password']:focus {
+	display: inline-block;
+	margin: 10px 0;
+	outline: none;
 }
 
-#guestbook.delete-form a	{ display:block; margin:20px auto; width:110px }
-#guestbook.delete-form input[type="password"] {
-	margin-top:5px;
-	width:284px;
+#dialog-delete-form input[type='submit'] {
+	display: block;
+	margin-top: -10000px;
 }
-#guestbook.delete-form input[type="submit"] {
-	width:296px;
-}		
-#guestbook.delete-message p	{ padding:100px; height:50px; text-align:center }
+
+#dialog-delete-form p.validateTips.error { padding:15px 0; color: #f00 }
+#dialog-message p { display: table-cell; vertical-align: middle; text-align: center; }

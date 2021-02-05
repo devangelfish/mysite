@@ -1,0 +1,11 @@
+<%
+	for(var i = 0; i < data.length; i++){
+		var vo = data[i];
+%>
+<li>
+	<a href="<%=vo.imageURL%>" data-lightbox="gallery" class="image" style="background-image:url('<%=vo.imageURL%>')">&nbsp;</a>
+	<a href="/gallery/delete/<%=vo.no%>" class="del-button" title="삭제">삭제</a>
+</li>
+<%
+	}
+%>

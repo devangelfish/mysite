@@ -15,13 +15,35 @@
 <script>
 let startNo = 0;
 let isEnd = false;
+
 const listTemplate = new EJS({
 	url: '${pageContext.request.contextPath }/assets/js/ejs/list-template.ejs'
 });
+
 const listItemTemplate = new EJS({
 	url: '${pageContext.request.contextPath }/assets/js/ejs/list-item-template.ejs'
 });
+
 /* guestbook spa application */
+const messageBox = function(title, message, callback){
+	$("#dialog-message")
+		.attr('title', title)
+		.dialog({
+			modal: true,
+			buttons: {
+				"확인": function(){
+					$(this).dialog('close');
+				}
+			},
+			close: callback || function(){}
+		});
+	
+	$("#dialog-message p")
+		.height($("#dialog-message").height())
+		.width($("#dialog-message").width())
+		.html(message.replace(/\n/gi, '<br>'));
+}
+
 const fetchList = function(){
 	if(isEnd) {
 		return;
@@ -50,6 +72,7 @@ const fetchList = function(){
 			const html = listTemplate.render(response);
 			$("#list-guestbook").append(html);
 			
+			
 			// startNo = response.data[response.data.length-1]["no"];
 			startNo = $('#list-guestbook li').last().data('no') || 0;
 		},
@@ -58,7 +81,55 @@ const fetchList = function(){
 		}
 	});	
 }
+
 $(function(){
+	const dialogDelete = $("#dialog-delete-form").dialog({
+		width: 300,
+		height: 200,
+		autoOpen: false,
+		model: true,
+		buttons: {
+			"삭제": function() {
+				const password = $('#password-delete').val();
+				const no = $('#hidden-no').val();
+				$.ajax({
+					url: '${pageContext.request.contextPath }/api/guestbook/delete/' + no,
+					async: true,
+					type: 'delete',
+					dataType: 'json',
+					data: 'password=' + password,
+					success: function(response){
+						console.log(response);
+						if(response.result != 'success'){
+							console.error(response.message);
+							return;
+						}
+						
+						if(response.data != -1) {
+							$('#list-guestbook li[data-no=' + response.data + ']').remove();
+							dialogDelete.dialog('close');
+							return;
+						}
+						
+						// 비밀번호가 틀린 경우
+						$('#dialog-delete-form p.validateTips.error').show();
+					},
+					error: function(xhr, status, e){
+						console.log(status + ':' + e);
+					}
+				});
+			},
+			"취소": function() {
+				$(this).dialog('close');
+			}
+		},
+		close: function() {
+			$('#password-delete').val('');
+			$('#hidden-no').val('');
+			$('#dialog-delete-form p.validateTips.error').hide();
+		}
+	})
+	
 	// 버튼 이벤트(test)
 	$('#btn-fetch').click(fetchList);
 	
@@ -95,7 +166,7 @@ $(function(){
 			error: function(xhr, status, e){
 				console.log(status + ':' + e);
 			}
-		});		
+		});	
 	});
 	
 	// 창 스크롤 이벤트
@@ -112,9 +183,45 @@ $(function(){
 		}
 	});
 	
+	// 삭제 버튼 click 이벤트
+	// Live Event: 존재하지 않는 element의 이벤트 핸들러를 미리 세팅하는 것
+	// delegation(위임, document)
+	$(document).on('click', '#list-guestbook li a', function(event){
+		event.preventDefault();
+		
+		const no = $(this).data('no');
+		$('#hidden-no').val(no);
+		dialogDelete.dialog('open');
+	});
+	
 	// 첫번쨰 리스트 가져오기
 	fetchList();
+	
+	// jQuery Plugin Test
+	$("#btn-fetch").hello();
+	$("#btn-fetch").flash();
 });
+</script>
+
+<script>
+(function($){
+	$.fn.hello = function(){
+		console.log(this);
+		console.log("hello #" + this.attr('title'))
+	}
+})(jQuery);
+(function($){
+	$.fn.flash = function(){
+		const $this = this;
+		let isBlink = false;
+		setInterval(function(){
+			$this.css('backgroundColor', (isBlink ? '#f00' : '#aaa'));
+			isBlink = !isBlink;
+		}, 1000);
+	}
+})(jQuery);
+
+
 </script>
 </head>
 <body>
@@ -131,7 +238,7 @@ $(function(){
 				</form>
 				<ul id="list-guestbook"></ul>
 				<div style='margin:20px 0 0 0'>
-					<button id='btn-fetch'>다음가져오기</button>
+					<button id='btn-fetch' title='jQuery plugin'>다음가져오기</button>
 				</div>
 			</div>
 			<div id="dialog-delete-form" title="메세지 삭제" style="display:none">

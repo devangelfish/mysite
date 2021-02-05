@@ -5,10 +5,12 @@
 		<typeAlias type="com.bitacademy.mysite.vo.GuestbookVo" alias="guestbookvo"/>
 		<typeAlias type="com.bitacademy.mysite.vo.UserVo" alias="uservo"/>
 		<typeAlias type="com.bitacademy.mysite.vo.BoardVo" alias="boardvo"/>
+		<typeAlias type="com.bitacademy.mysite.vo.GalleryVo" alias="galleryvo"/>
 	</typeAliases>
 	<mappers>
 		<mapper resource="mybatis/mappers/guestbook.xml" />
 		<mapper resource="mybatis/mappers/user.xml" />
 		<mapper resource="mybatis/mappers/board.xml" />
+		<mapper resource="mybatis/mappers/gallery.xml" />
 	</mappers>
 </configuration>
