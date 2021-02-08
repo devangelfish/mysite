@@ -32,7 +32,7 @@ $(function(){
 				for(index in image) {
 					html = '<li>' +
 					'<a href="${pageContext.request.contextPath}' + image[index].imageURL + '" data-lightbox="gallery" class="image" style="background-image:url(${pageContext.request.contextPath}' + image[index].imageURL + ')">&nbsp;</a>' +
-					'<a href="${pageContext.request.contextPath}/gallery/delete/' + image[index].no + '" class="del-button" title="삭제">삭제</a>' + '</li>';
+					'<a href="' + image[index].no + '" class="del-button" title="삭제">삭제</a>' + '</li>';
 					
 					$('div#gallery ul').prepend(html);
 				}
@@ -90,7 +90,7 @@ $(function(){
 		close: function() {
 			$('.validateTips.normal').text('이미지와 간단한 코멘트를 입력해 주세요.');
 			$( "#dialog-upload-form form" ).get(0).reset();
-			setTimeout(load, 100);
+			setTimeout(load, 500);
 		}
 	});
 		
@@ -102,6 +102,26 @@ $(function(){
 	$("submit#input-button").click(function(event) {
 		event.preventDefault();
 	})
+	
+	$("body").on("click", "a.del-button", function(event) {
+		event.preventDefault();
+		
+		no = $(this).attr('href');
+		$.ajax({
+			url: "${pageContext.request.contextPath}/api/gallery/" + no,
+			type: "DELETE",
+		    success: function (response) {
+				if(response.result != 'success'){
+					console.error(response.message);
+					return;
+				}
+				setTimeout(load, 500);
+	    	},
+	    	error: function(xhr, status, e){
+				console.log(status + ':' + e);
+			}
+		})
+	}) 
 });	
 </script>
 </head>

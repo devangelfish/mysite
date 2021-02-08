@@ -63,4 +63,8 @@ public class GalleryService {
 	public List<GalleryVo> fetch() {
 		return galleryRepository.select();
 	}
+
+	public void delete(Long no) {
+		galleryRepository.delete(no);
+	}
 }

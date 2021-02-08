@@ -17,4 +17,10 @@
 			select no, comment, image_url as imageURL from gallery
 		]]>
 	</select>
+	
+	<delete id="delete" parameterType="long">
+		<![CDATA[
+			delete from gallery where no = #{_parameter}
+		]]>
+	</delete>
 </mapper>

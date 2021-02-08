@@ -21,4 +21,8 @@ public class GalleryRepository {
 	public List<GalleryVo> select() {
 		return sqlSession.selectList("gallery.select");
 	}
+
+	public int delete(Long no) {
+		return sqlSession.delete("gallery.delete", no);
+	}
 }
